@@ -1,0 +1,9 @@
+spring:
+# 아무것도 없으면 기본적으로 메모리 db로 테스트함
+# jdbc:h2:mem:test
+
+
+logging:
+  level:
+    org.hibernate.SQL: debug
+    org.hibernate.type: trace

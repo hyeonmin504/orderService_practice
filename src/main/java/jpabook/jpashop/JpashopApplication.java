@@ -1,6 +1,7 @@
 package jpabook.jpashop;
 
 import jakarta.transaction.Transactional;
+import jpabook.jpashop.domain.Member;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
