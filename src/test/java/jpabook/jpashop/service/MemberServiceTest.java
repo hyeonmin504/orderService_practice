@@ -18,7 +18,8 @@ import static org.junit.Assert.*;
 public class MemberServiceTest {
 
     @Autowired MemberService memberService;
-    @Autowired MemberRepository memberRepository;
+    @Autowired
+    MemberRepository memberRepository;
     @Autowired EntityManager em;
     @Test
     public void 회원가입() throws Exception {
@@ -31,7 +32,7 @@ public class MemberServiceTest {
 
         //then
         em.flush();
-        assertEquals(member, memberRepository.findOne(savedId));
+        assertEquals(member, memberRepository.findById(savedId));
     }
 
     @Test(expected = IllegalStateException.class) // == 여기서 이 오류 클래스가 발생해야 한다. try catch 제거 가
