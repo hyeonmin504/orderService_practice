@@ -1,9 +1,11 @@
 package jpabook.jpashop.repository;
 
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.*;
-import jpabook.jpashop.domain.Member;
+import jpabook.jpashop.domain.*;
 import jpabook.jpashop.domain.Order;
 import jpabook.jpashop.repository.order.simplequery.OrderSimpleQueryDto;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +33,8 @@ public class OrderRepository {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Order> cq = cb.createQuery(Order.class);
         Root<Order> o = cq.from(Order.class);
-        Join<Order, Member> m = o.join("member", JoinType.INNER); //회원과 조인
+        Join<Order, Member> m = o.join("member", JoinType.INNER);
+        Join<Order, OrderItem> oi = o.join("orderItems",JoinType.RIGHT);//회원과 조인
         List<Predicate> criteria = new ArrayList<>();
 //주문 상태 검색
         if (orderSearch.getOrderStatus() != null) {
@@ -49,6 +52,29 @@ public class OrderRepository {
         cq.where(cb.and(criteria.toArray(new Predicate[criteria.size()])));
         TypedQuery<Order> query = em.createQuery(cq).setMaxResults(1000); //최대 1000 건
         return query.getResultList();
+    }
+
+    public List<Order> findAllbyQuerydsl(OrderSearch orderSearch) {
+        QOrder order = new QOrder("o");
+        QMember member = new QMember("m");
+        QOrderItem orderItem = new QOrderItem("oi");
+        JPAQueryFactory jpaQueryFactory = new JPAQueryFactory(em);
+        BooleanBuilder builder = new BooleanBuilder();
+
+        if(orderSearch.getOrderStatus()!=null){
+            builder.and(order.status.eq(orderSearch.getOrderStatus()));
+        }
+        if(orderSearch.getMemberName()!=null) {
+            builder.and(member.username.eq(orderSearch.getMemberName()));
+        }
+        return jpaQueryFactory
+                .select(order)
+                .from(order)
+                .leftJoin(order.member, member)
+                .rightJoin(order.orderItems,orderItem)
+                .where(builder)
+                .fetch();
+
     }
 
     public List<Order> findAllWithMemberDelivery() {

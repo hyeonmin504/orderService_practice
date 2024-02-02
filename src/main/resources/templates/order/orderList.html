@@ -43,6 +43,20 @@
                        class="btn btn-danger">CANCEL</a>
                 </td>
             </tr>
+            <tr th:each="item : ${orders}">
+                <td th:text="${item.id}"></td>
+                <td th:text="${item.member.username}"></td>
+                <td th:text="${item.orderItems[1].item.name}"></td>
+                <td th:text="${item.orderItems[1].orderPrice}"></td>
+                <td th:text="${item.orderItems[1].count}"></td>
+                <td th:text="${item.status}"></td>
+                <td th:text="${item.orderDate}"></td>
+                <td>
+                    <a th:if="${item.status.name() == 'ORDER'}" href="#"
+                       th:href="'javascript:cancel('+${item.id}+')'"
+                       class="btn btn-danger">CANCEL</a>
+                </td>
+            </tr>
             </tbody>
         </table>
     </div>

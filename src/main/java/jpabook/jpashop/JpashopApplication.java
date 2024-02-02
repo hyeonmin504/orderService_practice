@@ -12,7 +12,6 @@ import org.springframework.context.annotation.Bean;
 public class JpashopApplication {
 	public static void main(String[] args) {
 
-		Member m = new Member();
 		SpringApplication.run(JpashopApplication.class, args);
 	}
 

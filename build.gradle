@@ -24,23 +24,35 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-devtools'
-	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-hibernate5-jakarta'
-
 	compileOnly 'org.projectlombok:lombok'
-	runtimeOnly 'com.h2database:h2:2.2.224'
-
+	runtimeOnly 'com.h2database:h2'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation("org.junit.vintage:junit-vintage-engine:") {
+
+	implementation 'org.springframework.boot:spring-boot-devtools'
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-hibernate5-jakarta'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	testImplementation("org.junit.vintage:junit-vintage-engine") {
 		exclude group: "org.hamcrest", module: "hamcrest-core"
 	}
 	implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.9.0'
 
+	//test 롬복 사용
+	testCompileOnly 'org.projectlombok:lombok'
+	testAnnotationProcessor 'org.projectlombok:lombok'
+
+	//Querydsl 추가
+	implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
+	annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jakarta"
+	annotationProcessor "jakarta.annotation:jakarta.annotation-api"
+	annotationProcessor "jakarta.persistence:jakarta.persistence-api"
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+clean{
+	delete file('src/main/generated')
 }

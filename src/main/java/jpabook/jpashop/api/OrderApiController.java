@@ -5,10 +5,12 @@ import jpabook.jpashop.domain.Order;
 import jpabook.jpashop.domain.OrderItem;
 import jpabook.jpashop.domain.OrderStatus;
 import jpabook.jpashop.repository.OrderRepository;
+import jpabook.jpashop.repository.OrderRepository2;
 import jpabook.jpashop.repository.OrderSearch;
 import jpabook.jpashop.repository.order.query.OrderFlatDto;
 import jpabook.jpashop.repository.order.query.OrderQueryDto;
 import jpabook.jpashop.repository.order.query.OrderQueryRepository;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,6 +27,7 @@ import static java.util.stream.Collectors.toList;
 public class OrderApiController {
 
     private final OrderRepository orderRepository;
+    private final OrderRepository2 orderRepository2;
     private final OrderQueryRepository orderQueryRepository;
 
     @GetMapping("/api/v1/orders")
@@ -68,6 +71,16 @@ public class OrderApiController {
                 .collect(toList());
 
         return result;
+    }
+
+    @GetMapping("/orderss")
+    public Result SearchOrderItem(OrderSearch orderSearch) {
+        List<Order> findOrder = orderRepository2.findAllbyQuerydsl(orderSearch);
+
+        List<OrderDto> collect = findOrder.stream()
+                .map(order -> new OrderDto(order))
+                .collect(Collectors.toList());
+        return new Result(collect,collect.size());
     }
 
     @GetMapping("/api/v4/orders")
@@ -117,5 +130,12 @@ public class OrderApiController {
             orderPrice = orderItem.getOrderPrice();
             count = orderItem.getCount();
         }
+    }
+
+    @Data
+    @AllArgsConstructor
+    static class Result<T> {
+        private T data;
+        private int size;
     }
 }
